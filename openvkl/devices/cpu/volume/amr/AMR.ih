@@ -97,6 +97,7 @@ struct AMRLeaf
   AMRBrick **brickList;
   box3f bounds;
   range1f valueRange;
+  bool isVoid;
 };
 
 struct AMRLevel

@@ -252,22 +252,24 @@ namespace openvkl {
 
       tasking::parallel_for(numLeaves, [&](size_t taskIndex) {
         const auto &leaf = leaves[taskIndex];
+        if (!leaf.isVoid) {
 
-        // leaf bounds are in AMR-space; transform into object-space
-        const box3f bounds = box3f(origin + leaf.bounds.lower * spacing,
-                                   origin + leaf.bounds.upper * spacing);
+          // leaf bounds are in AMR-space; transform into object-space
+          const box3f bounds = box3f(origin + leaf.bounds.lower * spacing,
+                                     origin + leaf.bounds.upper * spacing);
 
-        prims[taskIndex].lower_x        = bounds.lower.x;
-        prims[taskIndex].lower_y        = bounds.lower.y;
-        prims[taskIndex].lower_z        = bounds.lower.z;
-        prims[taskIndex].geomID         = taskIndex >> 32;
-        prims[taskIndex].upper_x        = bounds.upper.x;
-        prims[taskIndex].upper_y        = bounds.upper.y;
-        prims[taskIndex].upper_z        = bounds.upper.z;
-        prims[taskIndex].primID         = taskIndex & 0xffffffff;
-        userData[taskIndex].range       = leaf.valueRange;
-        userData[taskIndex].cellWidth   = leaf.brickList[0]->cellWidth;
-        userData[taskIndex].gridSpacing = spacing;
+          prims[taskIndex].lower_x        = bounds.lower.x;
+          prims[taskIndex].lower_y        = bounds.lower.y;
+          prims[taskIndex].lower_z        = bounds.lower.z;
+          prims[taskIndex].geomID         = taskIndex >> 32;
+          prims[taskIndex].upper_x        = bounds.upper.x;
+          prims[taskIndex].upper_y        = bounds.upper.y;
+          prims[taskIndex].upper_z        = bounds.upper.z;
+          prims[taskIndex].primID         = taskIndex & 0xffffffff;
+          userData[taskIndex].range       = leaf.valueRange;
+          userData[taskIndex].cellWidth   = leaf.brickList[0]->cellWidth;
+          userData[taskIndex].gridSpacing = spacing;
+        }
       });
 
       rtcBVH = rtcNewBVH(rtcDevice);

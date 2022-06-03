@@ -22,7 +22,17 @@ varying float AMR_current(const Sampler *uniform self,
   vec3f lP;  // local amr space
   AMRVolume_transformObjectToLocal(volume, P, lP);
 
-  const CellRef C = findLeafCell(amr, lP);
+  bool valid;
+  const CellRef C = findLeafCell(amr, lP, valid);
+
+  if (!valid) {
+    static int printed=0;
+    if (!printed) {
+      printed = 1;
+      print("CNAN\n");
+    }
+    return nan;
+  }
 
   DualCell D;
   initDualCell(D, lP, C.width);

@@ -22,6 +22,19 @@ varying float AMR_finest(const Sampler *uniform self,
   vec3f lP;  // local amr space
   AMRVolume_transformObjectToLocal(volume, P, lP);
 
+  bool valid;
+  const CellRef C = findLeafCell(amr, lP, valid);
+
+  if (!valid) {
+    static int printed=0;
+    if (!printed) {
+      printed = 1;
+      print("FNAN\n");
+    }
+    return nan;
+  }
+  return C.value;
+
   DualCell D;
   initDualCell(D, lP, *amr->finestLevel);
   findDualCell(amr, D);
