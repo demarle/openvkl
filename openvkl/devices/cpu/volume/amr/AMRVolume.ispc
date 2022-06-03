@@ -74,8 +74,14 @@ export void EXPORT_UNIQUE(AMRVolume_computeValueRangeOfLeaf,
 
   const AMR *uniform amr  = &self->amr;
   AMRLeaf *uniform leaf   = amr->leaf + leafID;
+  if (leaf->isVoid) {
+    return;
+  }
   AMRBrick *uniform brick = leaf->brickList[0];
 
+  if (!brick) {
+    return;
+  }
   assert(brick->value->dataType == VKL_FLOAT);
 
   for (uniform uint64 i = 0; i < brick->value->numItems; i++) {

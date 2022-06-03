@@ -17,6 +17,11 @@ namespace openvkl {
           brickVec.push_back(&b);
           bounds.extend(b.worldBounds);
         }
+        //bounds.lower = {0.f,0.f,0.f};
+        //bounds.upper = {20.f,20.f,20.f};
+        std::cerr << "***********************************************" << std::endl;
+        std::cerr << "VKLS BOUNDS ARE [" << bounds << "]" << std::endl;
+        std::cerr << "***********************************************" << std::endl;
         this->worldBounds = bounds;
 
         for (auto &b : brickVec) {
@@ -64,6 +69,14 @@ namespace openvkl {
 
         newLeaf.brickList[brick.size()] = nullptr;
         this->leaf.push_back(newLeaf);
+      }
+
+      void AMRAccel::makeVoid(index_t nodeID,
+                              const box3f &bounds)
+      {
+        node[nodeID].dim      = 7;
+        node[nodeID].ofs      = this->leaf.size();  // item.size();
+        std::cerr << "MAKE VOID " << nodeID << " " << this->leaf.size() << " " << bounds << std::endl;
       }
 
       void AMRAccel::makeInner(index_t nodeID, int dim, float pos, int childID)
@@ -172,17 +185,26 @@ namespace openvkl {
             PRINT(bestDim);
             PRINT(brick.size());
           }
-          assert(!(l.empty() || r.empty()));
+          //assert(!(l.empty() || r.empty()));
 
           int newNodeID = node.size();
           makeInner(nodeID, bestDim, bestPos, newNodeID);
 
           node.push_back(AMRAccel::Node());
           node.push_back(AMRAccel::Node());
+
           brick.clear();
 
-          buildRec(newNodeID + 0, lBounds, l);
-          buildRec(newNodeID + 1, rBounds, r);
+          if (!l.empty()) {
+            buildRec(newNodeID + 0, lBounds, l);
+          } else {
+            makeVoid(newNodeID + 0, lBounds);
+          }
+          if (!r.empty()) {
+            buildRec(newNodeID + 1, rBounds, r);
+          } else {
+            makeVoid(newNodeID + 1, rBounds);
+          }
         }
       }
 

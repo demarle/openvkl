@@ -38,3 +38,7 @@ extern CellRef findCell(const AMR *uniform self,
 
 extern CellRef findLeafCell(const AMR *uniform self,
                             const varying vec3f &_worldSpacePos);
+
+extern CellRef findLeafCell(const AMR *uniform self,
+                            const varying vec3f &_worldSpacePos,
+                            bool &OKres);

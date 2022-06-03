@@ -56,6 +56,8 @@ namespace openvkl {
               set AFTER all the bricks are being generated (we need all
               bricks before we can even compute the values in a brick */
           range1f valueRange;
+
+          bool isVoid = false;
         };
 
         /*! each node in the tree refers to either a pair of child
@@ -71,10 +73,14 @@ namespace openvkl {
           {
             return dim == 3;
           }
+          inline bool isVoid() const
+          {
+            return dim == 7;
+          }
           // first dword
-          uint32 ofs : 30;  // offset in node[] array (if inner), or brick ID
+          uint32 ofs : 29;  // offset in node[] array (if inner), or brick ID
                             // (if leaf)
-          uint32 dim : 2;   // upper two bits: split dimension. '3' means 'leaf
+          uint32 dim : 3;   // upper two bits: split dimension. '3' means 'leaf
           // second dword
           union
           {
@@ -103,6 +109,8 @@ namespace openvkl {
         void makeLeaf(index_t nodeID,
                       const box3f &bounds,
                       const std::vector<const AMRData::Brick *> &brickIDs);
+        void makeVoid(index_t nodeID,
+                      const box3f &bounds);
         void makeInner(index_t nodeID, int dim, float pos, int childID);
         void buildRec(int nodeID,
                       const box3f &bounds,
