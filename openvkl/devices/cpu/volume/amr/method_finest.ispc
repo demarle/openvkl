@@ -21,8 +21,12 @@ varying float AMR_finest(const Sampler *uniform self,
   const CellRef C = findLeafCell(amr, lP, valid);
 
   if (!valid) {
-    print("invalid\n");
-    return 0.0;
+    static int printed=0;
+    if (!printed) {
+      printed = 1;
+      print("FNAN\n");
+    }
+    return nan;
   }
   return C.value;
 

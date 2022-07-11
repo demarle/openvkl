@@ -75,8 +75,7 @@ namespace openvkl {
                               const box3f &bounds)
       {
         node[nodeID].dim      = 7;
-        node[nodeID].ofs      = this->leaf.size();  // item.size();
-        std::cerr << "MAKE VOID " << nodeID << " " << this->leaf.size() << " " << bounds << std::endl;
+        node[nodeID].ofs      = this->leaf.size();
       }
 
       void AMRAccel::makeInner(index_t nodeID, int dim, float pos, int childID)
@@ -172,18 +171,6 @@ namespace openvkl {
               r.push_back(b);
               l.push_back(b);
             }
-          }
-          if (l.empty() || r.empty()) {
-            /* this here "should" never happen since the root level is
-               always completely covered. if we do reach this code we
-               have found a spatial region that doesn't contain *any*
-               brick, so we can be pretty sure that "something" is
-               missing :-/ */
-            std::cerr << "ERROR: found non overlapped node in AMR structure\n";
-            PRINT(bounds);
-            PRINT(bestPos);
-            PRINT(bestDim);
-            PRINT(brick.size());
           }
           //assert(!(l.empty() || r.empty()));
 
