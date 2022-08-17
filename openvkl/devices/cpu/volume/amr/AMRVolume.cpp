@@ -125,6 +125,13 @@ namespace openvkl {
             "VKL_FLOAT");
       }
 
+      // used in distributed memory parallel applications
+      const vec3f globalBoundsMin =
+          this->template getParam<vec3f>("globalBoundsMin", vec3f(0.f));
+      const vec3f globalBoundsMax =
+          this->template getParam<vec3f>("globalBoundsMax", vec3f(70.f));
+      const box3f globalBounds = box3f(globalBoundsMin, globalBoundsMax);
+
       // create the AMR data structure. This creates the logical blocks, which
       // contain the actual data and block-level metadata, such as cell width
       // and refinement level
@@ -137,7 +144,7 @@ namespace openvkl {
       // representation of the blocks in the AMRData object. In short, blocks at
       // the highest refinement level (i.e. with the most detail) are leaf
       // nodes, and parents have progressively lower resolution
-      accel = make_unique<amr::AMRAccel>(*data);
+      accel = make_unique<amr::AMRAccel>(*data, globalBounds);
 
       float coarsestCellWidth =
           *std::max_element(cellWidthsData->begin(), cellWidthsData->end());

@@ -20,7 +20,7 @@ namespace openvkl {
       struct AMRAccel
       {
         /*! constructor that constructs the actual accel from the amr data */
-        AMRAccel(const AMRData &input);
+        AMRAccel(const AMRData &input, const box3f &globalbounds);
         /*! destructor that frees all allocated memory */
         ~AMRAccel();
 

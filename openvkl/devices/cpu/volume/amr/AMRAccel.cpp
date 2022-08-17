@@ -9,7 +9,7 @@ namespace openvkl {
     namespace amr {
 
       /*! constructor that constructs the actual accel from the amr data */
-      AMRAccel::AMRAccel(const AMRData &input)
+      AMRAccel::AMRAccel(const AMRData &input, const box3f &globalbounds)
       {
         box3f bounds = empty;
         std::vector<const AMRData::Brick *> brickVec;
@@ -17,11 +17,8 @@ namespace openvkl {
           brickVec.push_back(&b);
           bounds.extend(b.worldBounds);
         }
-        bounds.lower = {0.f,0.f,0.f};
-        bounds.upper = {70.f,70.f,70.f};
-        std::cerr << "***********************************************" << std::endl;
-        std::cerr << "VKLS BOUNDS ARE [" << bounds << "]" << std::endl;
-        std::cerr << "***********************************************" << std::endl;
+        if (!globalbounds.empty())
+          bounds = globalbounds;
         this->worldBounds = bounds;
 
         for (auto &b : brickVec) {
