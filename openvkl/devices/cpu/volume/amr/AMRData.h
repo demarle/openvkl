@@ -75,17 +75,6 @@ namespace openvkl {
 
         //! our own, internal representation of a brick
         std::vector<Brick> brick;
-
-        /*! compute world-space bounding box (lot in _logical_ space,
-            but in _absolute_ space, with proper cell width as specified
-            in each level */
-        inline box3f worldBounds() const
-        {
-          box3f worldBounds = empty;
-          for (const auto &b : brick)
-            worldBounds.extend(b.worldBounds);
-          return worldBounds;
-        }
       };
 
     }  // namespace amr
